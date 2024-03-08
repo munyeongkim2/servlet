@@ -83,7 +83,7 @@ public class World extends JPanel implements MouseListener {
     @Override
     public void mouseClicked(MouseEvent arg0) {
 
-        MovableBall ball = new MovableBall(arg0.getX(), arg0.getY(), 50, Color.BLUE);
+        MoveableBall ball = new MoveableBall(arg0.getX(), arg0.getY(), 50, Color.BLUE);
         ball.setDX(-10 + random.nextInt(20));
         ball.setDY(-10 + random.nextInt(20));
 
