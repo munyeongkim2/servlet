@@ -13,8 +13,8 @@ import com.nhnacademy.PaintableBox;
 
 
 public class TestWorld {
-    static final int FRAME_WIDTH = 1200;
-    static final int FRAME_HEIGHT = 1000;
+    static final int FRAME_WIDTH = 400;
+    static final int FRAME_HEIGHT = 400;
     static final int MIN_RADIUS = 20;
     static final int MAX_RADIUS = 50;
     static final int MIN = 20;
