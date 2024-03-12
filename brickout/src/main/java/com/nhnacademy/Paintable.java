@@ -1,5 +1,8 @@
 package com.nhnacademy;
+import java.awt.Graphics;
 
-public class Paintable {
-    
-}
+public interface Paintable {
+
+    public void paint(Graphics g);
+} 
+

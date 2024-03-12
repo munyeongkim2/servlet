@@ -18,7 +18,7 @@ public class Ball implements Regionable{
             throw new IllegalArgumentException("볼이 정수 공간을 벗어납니다.");
         }
         this.radius = radius;
-        this.region = new Rectangle(x - radius, y- radius, 2 * radius, 2 * radius);// 볼
+        this.region = new Rectangle(x - radius, y- radius, 2 * radius, 2 * radius);
     }
     @Override
     public int getX() {

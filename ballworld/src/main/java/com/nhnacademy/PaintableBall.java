@@ -33,7 +33,7 @@ public class PaintableBall extends Ball implements Paintable{
         }
         this.color = color;
     }
-    
+    @Override
     public void paint(Graphics g){
         if(g == null){
             throw new IllegalArgumentException();

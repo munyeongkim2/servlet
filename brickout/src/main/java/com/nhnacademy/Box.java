@@ -16,8 +16,7 @@ public class Box implements Regionable{
         {
             throw new IllegalArgumentException("박스가 정수 공간을 벗어납니다.");
         }
-
-        this.region = new Rectangle(x , y , width, height);
+        this.region = new Rectangle(x - width / 2, y - height / 2, width, height);
 
     }
 
@@ -39,19 +38,20 @@ public class Box implements Regionable{
         return (int) region.getHeight();
     }
 
-    @Override
     public void setX(int x) {
-        region.setLocation( x, getY());
+        region.setLocation(x - getWidth() / 2, getY() - getHeight() / 2);
     }
 
-    @Override
     public void setY(int y) {
-        region.setLocation(getX(), y);
+        region.setLocation(getX() - getWidth() / 2, y - getHeight() / 2);
     }
 
     @Override
     public Rectangle getRegion() {
         return region;
+    }
+    public boolean crashBounds(Rectangle r) {
+        return getRegion().intersects(r);
     }
     
 }

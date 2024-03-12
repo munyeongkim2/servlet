@@ -36,7 +36,7 @@ public class PaintableBox extends Box implements Paintable{
         }
         this.color = color;
     }
-    
+    @Override
     public void paint(Graphics g){
         if(g == null){
             throw new IllegalArgumentException();
