@@ -1,119 +1,96 @@
-
 package com.nhnacademy;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
-
-
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 public class Store {
     
-    static List<CustomSemaphore> itemInventory= new ArrayList<>();
-    ExecutorService producerPool;
-    ExecutorService consumerPool;
-
-    // int defaltCount = 5;
-    int maxPool = 5;
+    final int MAX_COUNT = 5;
+    int count;
+    String itemName;
+    Semaphore semaphore;
+    // boolean flag = false;
     Random random = new Random();
-
-    public Store() {
-        itemInventory.add(new CustomSemaphore("Apple"));
-        itemInventory.add(new CustomSemaphore("Banana"));
-        itemInventory.add(new CustomSemaphore("Orange"));
-        itemInventory.add(new CustomSemaphore("Grapes"));
-        itemInventory.add(new CustomSemaphore("Watermelon"));
-
-        producerPool = Executors.newFixedThreadPool(maxPool);
-        consumerPool = Executors.newFixedThreadPool(maxPool);
-
-
+    public Store(String itemName) {
+        this.count = 0;
+        this.itemName = itemName;
+        this.semaphore = new Semaphore(1);
     }
-    public void enterProducer( Producer producer){
-        producerPool.submit(producer);
+    public int getCount() {
+        return count;
     }
-    public void enterCunsumer(Consumer consumer){
-        consumerPool.submit(consumer);
+    public void setCount(int count) {
+        this.count += count;
     }
-
-    public void buy() throws InterruptedException {
-        int name = random.nextInt(itemInventory.size());
-        boolean buyflag = itemInventory.get(name).tryAcquire(0);
-        if(itemInventory.get(name).getCount() > 0){
-            if(buyflag){
-                try {
-                    itemInventory.get(name).setCount(-1);
-                    System.out.println(itemInventory.get(name).getItemName() +" 구매했습니다. 재고 : "+itemInventory.get(name).getCount());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                finally {
-                    itemInventory.get(name).release(); // 품목에서 퇴장
-                }
-            }
-            // else{
-            //     // try {
-            //     //     if(itemInventory.get(name).tryAcquire(5) && itemInventory.get(name).getCount() >0){
-            //     //         itemInventory.get(name).setCount(-1);
-            //     //         System.out.println(itemInventory.get(name).getItemName() +" 구매했습니다. 재고 : "+itemInventory.get(name).getCount());
-            //     //     }
-            //     //     else{
-            //     //         System.out.println("구매를 포기하였습니다. 재고 : "+itemInventory.get(name).getCount());
-            //     //     }
-            //     // } catch (Exception e) {
-            //     //     e.printStackTrace();
-            //     // }
-            //     // finally {
-            //     //     itemInventory.get(name).release(); // 품목에서 퇴장
-            //     // }
-            // }
-        
-        }
+    public String getItemName() {
+        return itemName;
     }
-    
-    public void deliverItem() throws InterruptedException {
-        int name = random.nextInt(itemInventory.size());
-        if(itemInventory.get(name).getMaxNum() > itemInventory.get(name).getCount()){
-            try {
-                if(itemInventory.get(name).tryAcquire(0)){
-                    itemInventory.get(name).setCount(1);
-                    System.out.println(itemInventory.get(name).getItemName() +" 입고되었습니다. 재고 : "+itemInventory.get(name).getCount());
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
+    }
+    public Semaphore getSemaphore() {
+        return semaphore;
+    }
+    public void setSemaphore(Semaphore semaphore) {
+        this.semaphore = semaphore;
+    }
+    public void buy() {
+        while (getCount() > 0){
+            try{
+                if(semaphore.tryAcquire()){
+                    setCount(-1);
+                    System.out.println(getItemName()+" 구매했습니다. 재고 : "+getCount());
+                    break;
                 }
                 else{
-                    if(itemInventory.get(name).tryAcquire(5)){
-                        itemInventory.get(name).setCount(1);
-                        System.out.println(itemInventory.get(name).getItemName() +" 입고되었습니다. 재고 : "+itemInventory.get(name).getCount());
-                    }else{
-                        System.out.println("입고를 포기하였습니다. 재고 : "+itemInventory.get(name).getCount());
-                    }
+                    System.out.println("구매대기중..");
+                    if(!semaphore.tryAcquire(random.nextInt(5),TimeUnit.SECONDS)){
+                        System.out.println("구매를 포기하였습니다.");
+                        break;
                     
+                    }
                 }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                finally {
-                    itemInventory.get(name).release(); // 품목에서 퇴장
-                }
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+            finally{
+                semaphore.release(); // 품목에서 퇴장
+            }
+            
         }
-    
     }
 
-    // public void openMart() {
-    //     try {
-    //         System.out.println("Mart is now open!");
+    private void sell() {
+        System.out.println(getItemName() + " 팔렸습니다. 재고 : " + getCount());
+    }
 
-    //         // 마트를 5분 동안 오픈
-    //         Thread.sleep(5 * 60 * 1000);
+    public void deliver() {
+        while (getCount() < MAX_COUNT){
+            try {
+                if(semaphore.tryAcquire()){
+                    setCount(1);
+                    System.out.println(getItemName()+" 입고되었습니다. 재고 : "+getCount());
+                    break;
+                }
+                else{
+                    System.out.println("입고대기중..");
+                    if(!semaphore.tryAcquire(random.nextInt(5),TimeUnit.SECONDS)){
+                        System.out.println("입고를 포기하였습니다.");
+                        break;
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            finally{
+                semaphore.release(); // 품목에서 퇴장
+            }
+        
+        };
 
-    //         // 마트 오픈 종료 후 스레드 풀 종료
-    //         System.out.println("Mart is closed!");
-    //         System.exit(0);
-    //     } catch (InterruptedException e) {
-    //         e.printStackTrace();
-    //     }
-    // }
-
+    
+    }
+    
 }
