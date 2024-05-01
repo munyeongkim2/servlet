@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.awt.Rectangle;
 
 
-public class BoundedBox extends MoveableBox implements Bounded{ 
+public class BoundedBox extends MovableBox implements Bounded{ 
     // Rectangle bounds;
 
     public BoundedBox(int x, int y, int width, int height, Color color) {

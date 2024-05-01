@@ -6,30 +6,37 @@ import java.util.Random;
 
 import javax.swing.JPanel;
 
+import org.apache.logging.log4j.core.config.builder.api.Component;
+
 import java.awt.Graphics;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 
 import java.awt.event.MouseMotionListener;
 
 
-public class World extends JPanel implements  MouseMotionListener{
+public class World extends JPanel implements  MouseMotionListener, ComponentListener {
     
     List<Regionable> regionableList = new LinkedList<>();
     private boolean mouseEntered = false;
-    MoveableBox controlBar;
+    MovableBox controlBar;
 
     Random random = new Random();
     
     public World() {
         super();
         addMouseMotionListener(this);
+        addComponentListener(this);
+
+        
     }
 
-    public MoveableBox getControlBar() {
+    public MovableBox getControlBar() {
         return controlBar;
     }
 
-    public void setControlBar(MoveableBox controlBar) {
+    public void setControlBar(MovableBox controlBar) {
         this.controlBar = controlBar;
         add(getControlBar());
     }
@@ -98,6 +105,29 @@ public class World extends JPanel implements  MouseMotionListener{
 
 
    }
+
+  @Override
+    public void componentResized(ComponentEvent e) {
+ 
+    }
+
+    @Override
+    public void componentMoved(ComponentEvent e) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'componentMoved'");
+    }
+
+    @Override
+    public void componentShown(ComponentEvent e) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'componentShown'");
+    }
+
+    @Override
+    public void componentHidden(ComponentEvent e) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'componentHidden'");
+    }
 }
 
      

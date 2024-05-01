@@ -6,9 +6,9 @@ import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
 
 public class Main {
+
     ExecutorService producerPool;
     ExecutorService consumerPool;
 
@@ -91,7 +91,6 @@ class Test{
         while (true) {
             if (main.producerPool.isShutdown() && main.consumerPool.isShutdown()) {
                 System.out.println("영업 종료");
-                // logger.info();
                 break;
             }
         }

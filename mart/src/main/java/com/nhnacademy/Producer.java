@@ -6,6 +6,7 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Producer implements Runnable {
+    
     private List<Store> stores;
     Random random = new Random();
 
@@ -15,6 +16,7 @@ public class Producer implements Runnable {
 
     @Override
     public void run() {
+
         int randomDelivery = random.nextInt(stores.size());
         Collections.shuffle(stores);
         try {
@@ -23,8 +25,9 @@ public class Producer implements Runnable {
                 stores.get(i).deliver();
             }
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Thread.currentThread().interrupt();
         }
+
         
     }
 }

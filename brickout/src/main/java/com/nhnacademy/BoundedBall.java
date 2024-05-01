@@ -3,7 +3,7 @@ package com.nhnacademy;
 import java.awt.Color;
 import java.awt.Rectangle;
 
-public class BoundedBall extends MoveableBall implements Bounded{
+public class BoundedBall extends MovableBall implements Bounded{
     // Rectangle bounds;
     
     public BoundedBall(int x, int y, int radius, Color color) {

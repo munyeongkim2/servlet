@@ -2,6 +2,7 @@ package com.nhnacademy;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -10,8 +11,8 @@ import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
 public class PlayGround { 
-    static final int FRAME_WIDTH = 800;
-    static final int FRAME_HEIGHT = 800;
+    static final int FRAME_WIDTH = 1000;
+    static final int FRAME_HEIGHT = 1000;
     static final int MIN_RADIUS = 10;
     static final int MAX_RADIUS = 50;
     static final int FIXED_BALL_COUNT = 0;
@@ -22,7 +23,7 @@ public class PlayGround {
     static final int MAX_DELTA = 20;
     static final int MAX_MOVE_COUNT = 0;
     static final int DT = 10;
-    static final int WALL_THICKNESS = 100;
+    static final int WALL_THICKNESS = 10;
     static final Color[] COLOR_TABLE = {
             Color.RED,
             Color.ORANGE,
@@ -34,13 +35,13 @@ public class PlayGround {
     public static void main(String[] args) {
         JFrame frame = new JFrame();
 
-        frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
+        frame.setSize(1200,1200);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        MoveableWorld world = new MoveableWorld();
+        MovableWorld world = new MovableWorld();
 
         frame.add(world);
-
+        world.setBounds(0,0,FRAME_WIDTH, FRAME_HEIGHT);
 
         world.add(new PaintableBox(-WALL_THICKNESS / 2, FRAME_HEIGHT / 2, WALL_THICKNESS, FRAME_HEIGHT + 2 * WALL_THICKNESS)); //brick 클래스 하나 만들기
         
@@ -48,9 +49,9 @@ public class PlayGround {
         world.add(new PaintableBox(FRAME_WIDTH + WALL_THICKNESS / 2, FRAME_HEIGHT / 2, WALL_THICKNESS, FRAME_HEIGHT + 2 * WALL_THICKNESS));
         world.add(new PaintableBox(FRAME_WIDTH / 2, FRAME_HEIGHT + WALL_THICKNESS / 2, FRAME_WIDTH + 2 * WALL_THICKNESS, WALL_THICKNESS));
         
-        world.setControlBar(new MoveableBox(FRAME_WIDTH / 2, FRAME_HEIGHT -40, 100,20,Color.BLACK));
+        world.setControlBar(new MovableBox(FRAME_WIDTH / 2, FRAME_HEIGHT -40, 100,20,Color.BLACK));
         world.setScoreObject(new Score(0,30,50,50));
-
+        
         //brick 샤이즈
         int width = 100;
         int height = 50;

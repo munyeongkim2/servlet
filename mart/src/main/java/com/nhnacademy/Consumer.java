@@ -4,10 +4,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Consumer implements Runnable {
-   private List<Store> stores;
-   Random random = new Random();
+    Logger logger = LogManager.getLogger(Consumer.class.getName());
+    private List<Store> stores;
+    Random random = new Random();
 
     public Consumer(List<Store> stores) {
         this.stores = stores;
@@ -15,6 +18,7 @@ public class Consumer implements Runnable {
 
     @Override
     public void run() {
+        logger.info("구매자 입장했습니다.");
         int randomBuy = random.nextInt(stores.size());
         Collections.shuffle(stores);
         try {
@@ -23,7 +27,8 @@ public class Consumer implements Runnable {
                 stores.get(i).buy();
             }
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Thread.currentThread().interrupt();
         }
+        logger.info("구매자 퇴장했습니다.");
     }
 }

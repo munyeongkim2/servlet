@@ -3,14 +3,17 @@ package com.nhnacademy;
 import java.util.Random;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 public class Store {
-    
-    final int MAX_COUNT = 5;
+    Logger logger = LogManager.getLogger(this.getClass().getSimpleName());
+    static final int MAX_COUNT = 5;
     int count;
     String itemName;
     Semaphore semaphore;
-    // boolean flag = false;
+
     Random random = new Random();
     public Store(String itemName) {
         this.count = 0;
@@ -36,59 +39,58 @@ public class Store {
         this.semaphore = semaphore;
     }
     public void buy() {
-        while (getCount() > 0){
+        if (getCount() > 0){
             try{
                 if(semaphore.tryAcquire()){
                     setCount(-1);
                     System.out.println(getItemName()+" 구매했습니다. 재고 : "+getCount());
-                    break;
+                    semaphore.release(); // 품목에서 퇴장
+                    logger.info("구매했습니다. 재고 : {} ",getCount());
                 }
                 else{
                     System.out.println("구매대기중..");
                     if(!semaphore.tryAcquire(random.nextInt(5),TimeUnit.SECONDS)){
-                        System.out.println("구매를 포기하였습니다.");
-                        break;
-                    
+                        logger.warn("구매를 포기하였습니다.");
+                    }
+                    else{
+                        setCount(-1);
+                        logger.info(" 구매했습니다. 재고 : {}",getCount());
+                        semaphore.release(); // 품목에서 퇴장
                     }
                 }
+
             }
             catch (Exception e) {
-                e.printStackTrace();
-            }
-            finally{
-                semaphore.release(); // 품목에서 퇴장
+                Thread.currentThread().interrupt();
             }
             
         }
     }
 
-    private void sell() {
-        System.out.println(getItemName() + " 팔렸습니다. 재고 : " + getCount());
-    }
-
     public void deliver() {
-        while (getCount() < MAX_COUNT){
+        if (getCount() < MAX_COUNT){
             try {
                 if(semaphore.tryAcquire()){
                     setCount(1);
-                    System.out.println(getItemName()+" 입고되었습니다. 재고 : "+getCount());
-                    break;
+                    logger.info(" 입고되었습니다. 재고 : {}",getCount());
+                    semaphore.release(); // 품목에서 퇴장
                 }
                 else{
                     System.out.println("입고대기중..");
                     if(!semaphore.tryAcquire(random.nextInt(5),TimeUnit.SECONDS)){
-                        System.out.println("입고를 포기하였습니다.");
-                        break;
+                        logger.warn("입고를 포기하였습니다.");
+                    }
+                    else{
+                        setCount(1);
+                        logger.info(" 입고되었습니다. 재고 : {}",getCount());
+                        semaphore.release(); // 품목에서 퇴장
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Thread.currentThread().interrupt();
             }
-            finally{
-                semaphore.release(); // 품목에서 퇴장
-            }
-        
-        };
+
+        }
 
     
     }
